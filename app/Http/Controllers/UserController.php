@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Models\UserModel;
+
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
@@ -60,7 +61,21 @@ class UserController extends Controller
             // return view('user', ['data' => $user]);
         
         // Modifikasi
-            $user = UserModel::where('username', 'manager9')->findOrFail();
-            return view('user', ['data' => $user]);
+            // $user = UserModel::where('username', 'manager9')->findOrFail();
+            // return view('user', ['data' => $user]);
+        
+
+
+        //--
+        //Praktikum 2.3 – Retreiving Aggregrates - J4
+            // $user = UserModel::where('level_id', 2)->count();
+            // dd($user);
+            // return view('user', ['data' => $user]);
+
+            //Modifikasi
+            // Hitung jumlah pengguna dengan level_id = 2
+            $jumlah = UserModel::where('level_id', 2)->count();
+            // Kirim data ke view
+            return view('user', ['jumlah' => $jumlah]);
     }
 }
