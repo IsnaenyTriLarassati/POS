@@ -47,9 +47,20 @@ class UserController extends Controller
         // return view('user', ['data' => $user]);
 
         //Modifikasi
-        $user = UserModel::findOr(20, ['username', 'nama'], function() {
-            abort(404);
-        });
-        return view('user', ['data' => $user]);
+        // $user = UserModel::findOr(20, ['username', 'nama'], function() {
+        //     abort(404);
+        // });
+        // return view('user', ['data' => $user]);
+
+
+
+        //--
+        //Praktikum 2.2 – Not Found Exceptions -J4
+            // $user = UserModel::findOrFail(1);
+            // return view('user', ['data' => $user]);
+        
+        // Modifikasi
+            $user = UserModel::where('username', 'manager9')->findOrFail();
+            return view('user', ['data' => $user]);
     }
 }
