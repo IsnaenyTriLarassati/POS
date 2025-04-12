@@ -7,6 +7,8 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\SalesController;
+use App\Http\Controllers\WelcomeController;
+
 // use App\Http\Controllers\UserControllerP6;
 
 /*
@@ -20,7 +22,7 @@ use App\Http\Controllers\SalesController;
 |
 */
 
-Route::get('/', [HomeController::class,'index']);
+// Route::get('/', [HomeController::class,'index']);
 Route::get('/products', [ProductController::class, 'index']);
 Route::prefix('category')->group(function () {
     Route::get('{category_name}', [ProductController::class, 'category']);
@@ -50,3 +52,5 @@ Route:: get('/user/hapus/{id}', [UserController::class, 'hapus']);
 Route::get('/kategori', [KategoriController::class, 'index']);
 Route::get('/kategori/create', [KategoriController::class, 'create']);
 Route::post('/kategori', [KategoriController::class, 'store']);
+
+Route::get('/', [WelcomeController::class,'index']);
