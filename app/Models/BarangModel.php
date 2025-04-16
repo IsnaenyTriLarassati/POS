@@ -3,12 +3,28 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+
 
 class BarangModel extends Model
 {
-    public function barang(): BelongsTo
+    use HasFactory;
+
+    protected $table = 'm_barang'; // Nama tabel di database
+    protected $primaryKey = 'barang_id'; // Primary Key
+    public $timestamps = true; // Menggunakan timestamps
+
+    protected $fillable = [
+        'barang_kode',
+        'barang_nama',
+        'kategori_id',
+        'harga_beli',
+        'harga_jual'
+    ];
+
+    // Relasi ke tabel kategori (m_kategori)
+    public function kategori()
     {
-        return $this->belongsTo(BarangModel::class, 'kategori_id', 'kategori_id');
+        return $this->belongsTo(KategoriModel::class, 'kategori_id', 'kategori_id');
     }
 }
