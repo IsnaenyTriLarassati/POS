@@ -32,7 +32,7 @@ class LevelController extends Controller
     public function getLevels(Request $request)
     {
         if ($request->ajax()) {
-            $data = LevelModel::select('level_id', 'level_kode', 'level_name');
+            $data = LevelModel::select('level_id', 'level_kode', 'level_nama');
 
             return DataTables::of($data)
                 ->addIndexColumn()
@@ -165,7 +165,7 @@ class LevelController extends Controller
         if ($request->ajax() || $request->wantsJson()) {
             $rules = [
                 'level_kode' => 'required|string|min:3|unique:m_level,level_kode',
-                'level_name' => 'required|string|max:100',
+                'level_nama' => 'required|string|max:100',
             ];
 
             $validator = Validator::make($request->all(), $rules);
@@ -180,7 +180,7 @@ class LevelController extends Controller
 
             LevelModel::create([
                 'level_kode' => $request->level_kode,
-                'level_name' => $request->level_name,
+                'level_nama' => $request->level_nama,
             ]);
 
             return response()->json([
@@ -208,7 +208,7 @@ class LevelController extends Controller
         if ($request->ajax() || $request->wantsJson()) {
             $rules = [
                 'level_kode' => 'required|max:10|unique:m_level,level_kode,' . $id . ',level_id',
-                'level_name' => 'required|max:100'
+                'level_nama' => 'required|max:100'
             ];
 
             $validator = Validator::make($request->all(), $rules);
