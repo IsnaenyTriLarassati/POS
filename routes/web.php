@@ -19,13 +19,11 @@ Route::get('logout', [AuthController::class, 'logout']);
 
 
 Route::middleware(['auth'])->group(function () { // artinya semua route di dalam group ini harus login dulu
-    Route::get('/', [WelcomeController::class, 'index']);
+        Route::get('/', [WelcomeController::class, 'index']);
 
-});
+    // masukkan semua route yang perlu autentikasi di sini
 
-// masukkan semua route yang perlu autentikasi di sini
-Route::group(['prefix' => 'user'], function () {
-    Route::middleware(['authorize:ADM,MNG,STF,CUS'])->group(function () {
+    Route::middleware(['authorize:ADM,MNG,STF,CUS'])->prefix('user')->group(function () {       //Artinya semua route didalam group ini harus punya role ADM, MNG, STF, CUS 
         Route::get('/', [UserController::class, 'index']);                              // menampilkan halaman awal user
         Route::post('/list', [UserController::class, 'list']);                          // menampilkan data user dalam bentuk json untuk datatables
         Route::get('/create', [UserController::class, 'create']);                       // menampilkan halaman form tambah user
@@ -41,10 +39,8 @@ Route::group(['prefix' => 'user'], function () {
         Route::delete('/{id}/delete_ajax', [UserController::class, 'delete_ajax']);     // untuk hapus data user Ajax
         Route::delete('/{id}', [UserController::class, 'destroy']);                     // menghapus data user
     });
-});
 
-Route::group(['prefix' => 'level'], function () {
-    Route::middleware(['authorize:ADM,MNG'])->group(function () {
+    Route::middleware(['authorize:ADM,MNG'])->prefix('level')->group(function () {        //Artinya semua route didalam group ini harus punya role ADM (Administrator) dan MNG (Manager)
         Route::get('/', [LevelController::class, 'index']);                             // Menampilkan halaman awal level user
         Route::post('/list', [LevelController::class, 'list']);                         // menampilkan level user dalam bentuk json untuk datatables
         Route::get('/create', [LevelController::class, 'create']);                      // menampilkan halaman form tambah level user
@@ -60,11 +56,9 @@ Route::group(['prefix' => 'level'], function () {
         Route::delete('/{id}/delete_ajax', [LevelController::class, 'delete_ajax']);    // Untuk hapus data user Ajax
         Route::delete('/{id}', [LevelController::class, 'destroy']);                    // menghapus level user
     });
-});
 
-Route::group(['prefix' => 'kategori'], function () {
-    Route::middleware(['authorize:ADM,STF'])->group(function () {
-        Route::get('/', [KategoriController::class, 'index']);                          // Menampilkan halaman awal daftar kategori   
+    Route::middleware(['authorize:ADM,STF'])->prefix('kategori')->group(function () {        //Artinya semua route didalam group ini harus punya role ADM (Administrator) dan STF (Staff)
+        Route::get('/', [KategoriController::class, 'index']);                         // Menampilkan halaman awal daftar kategori   
         Route::post('/list', [KategoriController::class, 'list']);                      // menampilkan kategori dalam bentuk json untuk datatables
         Route::get('/create', [KategoriController::class, 'create']);                   // menampilkan halaman form tambah kategori 
         Route::post('/', [KategoriController::class, 'store']);                         // menyimpan kategori baru
@@ -79,11 +73,8 @@ Route::group(['prefix' => 'kategori'], function () {
         Route::delete('/{id}/delete_ajax', [KategoriController::class, 'delete_ajax']); // Untuk hapus data user Ajax        
         Route::delete('/{id}', [KategoriController::class, 'destroy']);                 // menghapus kategori
     });
-});
 
-
-Route::group(['prefix' => 'barang'], function () {
-    Route::middleware(['authorize:STF'])->group(function () {
+    Route::middleware(['authorize:STF'])->prefix('barang')->group(function () {                //Artinya semua route didalam group ini harus punya role STF (staff)
         Route::get('/', [BarangController::class, 'index']);                                // menampilkan halaman awal barang      
         Route::post('/list', [BarangController::class, 'list']);                            // menampilkan data barang dalam bentuk json untuk datatables    
         Route::get('/create', [BarangController::class, 'create']);                         // menampilkan halaman form tambah barang 
@@ -99,10 +90,8 @@ Route::group(['prefix' => 'barang'], function () {
         Route::delete('/{id}/delete_ajax', [BarangController::class, 'delete_ajax']);       // Untuk hapus data user Ajax   
         Route::delete('/{id}', [BarangController::class, 'destroy']);                       // menghapus data barang
     });
-});
 
-Route::group(['prefix' => 'stok'], function () {
-    Route::middleware(['authorize:STF'])->group(function () {
+    Route::middleware(['authorize:STF'])->prefix('stok')->group(function () {            //Artinya semua route didalam group ini harus punya role STF (staff)
         Route::get('/', [StokController::class, 'index']);                              // menampilkan halaman awal stok   
         Route::post('/list', [StokController::class, 'list']);                          // menampilkan data stok dalam bentuk json untuk datatables   
         Route::get('/create', [StokController::class, 'create']);                       // menampilkan halaman form tambah stok
