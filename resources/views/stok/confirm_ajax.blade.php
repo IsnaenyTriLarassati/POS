@@ -1,10 +1,10 @@
-@empty($kategori)
+@empty($stok)
     <div id="modal-master" class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Kesalahan</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">×</span>
+                    <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
@@ -12,20 +12,20 @@
                     <h5><i class="icon fas fa-ban"></i> Kesalahan!!!</h5>
                     Data yang anda cari tidak ditemukan
                 </div>
-                <a href="{{ url('/kategori') }}" class="btn btn-warning">Kembali</a>
+                <a href="{{ url('/stok') }}" class="btn btn-warning">Kembali</a>
             </div>
         </div>
     </div>
 @else
-    <form action="{{ url('/kategori/' . $kategori->kategori_id . '/delete_ajax') }}" method="POST" id="form-delete">
+    <form action="{{ url('/stok/' . $stok->stok_id . '/delete_ajax') }}" method="POST" id="form-delete">
         @csrf
         @method('DELETE')
         <div id="modal-master" class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Hapus Data Kategori</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Hapus Data Stok</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
+                        <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
@@ -35,12 +35,20 @@
                     </div>
                     <table class="table table-sm table-bordered table-striped">
                         <tr>
-                            <th class="text-right col-3">Kode Kategori :</th>
-                            <td class="col-9">{{ $kategori->kategori_kode }}</td>
+                            <th class="text-right col-3">Nama Barang :</th>
+                            <td class="col-9">{{ $stok->barang->barang_nama }}</td>
                         </tr>
                         <tr>
-                            <th class="text-right col-3">Nama Kategori :</th>
-                            <td class="col-9">{{ $kategori->kategori_nama }}</td>
+                            <th class="text-right col-3">User :</th>
+                            <td class="col-9">{{ $stok->user->nama }}</td>
+                        </tr>
+                        <tr>
+                            <th class="text-right col-3">Tanggal Stok :</th>
+                            <td class="col-9">{{ $stok->stok_tanggal }}</td>
+                        </tr>
+                        <tr>
+                            <th class="text-right col-3">Jumlah Stok :</th>
+                            <td class="col-9">{{ $stok->stok_jumlah }}</td>
                         </tr>
                     </table>
                 </div>
@@ -58,7 +66,7 @@
             submitHandler: function(form) {
                 $.ajax({
                     url: form.action,
-                    type: 'DELETE',
+                    type: form.method,
                     data: $(form).serialize(),
                     success: function(response) {
                         if (response.status) {
@@ -68,7 +76,7 @@
                                 title: 'Berhasil',
                                 text: response.message
                             });
-                            dataKategori.ajax.reload();
+                            dataStok.ajax.reload(); 
                         } else {
                             $('.error-text').text('');
                             $.each(response.msgField, function(prefix, val) {
