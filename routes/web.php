@@ -88,6 +88,7 @@ Route::middleware(['auth'])->group(function () { // artinya semua route di dalam
         Route::get('/import', [BarangController::class, 'import']);                                                     // Ajax form upload excel
         Route::post('/import_ajax', [BarangController::class, 'import_ajax']);                                          // Ajax import excel
         Route::get('/export_excel', [BarangController::class, 'export_excel']);                                         // Ajax export excel
+        Route::get('/export_pdf', [BarangController::class, 'export_pdf']);                                             // Ajax export pdf
     });
 
     Route::middleware(['authorize:ADM,STF'])->prefix('stok')->group(function () {                    //Artinya semua route didalam group ini harus punya role STF (staff)
