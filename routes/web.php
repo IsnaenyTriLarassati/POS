@@ -79,20 +79,15 @@ Route::middleware(['auth'])->group(function () { // artinya semua route di dalam
     Route::middleware(['authorize:ADM,STF'])->prefix('barang')->group(function () {                  //Artinya semua route didalam group ini harus punya role STF (staff)
         Route::get('/', [BarangController::class, 'index']);                                                            // menampilkan halaman awal barang      
         Route::post('/list', [BarangController::class, 'list']);                                                        // menampilkan data barang dalam bentuk json untuk datatables    
-        Route::get('/create', [BarangController::class, 'create']);                                                     // menampilkan halaman form tambah barang 
-        Route::post('/', [BarangController::class, 'store']);                                                           // menyimpan data barang baru
         Route::get('/create_ajax', [BarangController::class, 'create_ajax']);                                           // menampilkan halaman form tambah user Ajax            
         Route::post('/ajax', [BarangController::class, 'store_ajax']);                                                  // menyimpan data user baru Ajax
-        Route::get('/{id}', [BarangController::class, 'show']);                                                         // menampilkan detail barang
-        Route::get('/{id}/edit', [BarangController::class, 'edit']);                                                    // menampilkan halaman form edit barang
-        Route::put('/{id}', [BarangController::class, 'update']);                                                       // menyimpan perubahan data barang
         Route::get('/{id}/edit_ajax', [BarangController::class, 'edit_ajax']);                                          // Menampilkan halaman form edit user Ajax          
         Route::put('/{id}/update_ajax', [BarangController::class, 'update_ajax']);                                      // Menyimpan perubahan data user Ajax     
         Route::get('/{id}/delete_ajax', [BarangController::class, 'confirm_ajax']);                                     // Untuk tampilkan form confirm delete user Ajax      
         Route::delete('/{id}/delete_ajax', [BarangController::class, 'delete_ajax']);                                   // Untuk hapus data user Ajax   
-        Route::delete('/{id}', [BarangController::class, 'destroy']);                                                   // menghapus data barang
         Route::get('/import', [BarangController::class, 'import']);                                                     // Ajax form upload excel
         Route::post('/import_ajax', [BarangController::class, 'import_ajax']);                                          // Ajax import excel
+        Route::get('/export_excel', [BarangController::class, 'export_excel']);                                         // Ajax export excel
     });
 
     Route::middleware(['authorize:ADM,STF'])->prefix('stok')->group(function () {                    //Artinya semua route didalam group ini harus punya role STF (staff)
