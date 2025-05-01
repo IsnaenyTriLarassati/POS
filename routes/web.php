@@ -91,6 +91,8 @@ Route::middleware(['auth'])->group(function () { // artinya semua route di dalam
         Route::get('/{id}/delete_ajax', [BarangController::class, 'confirm_ajax']);                                     // Untuk tampilkan form confirm delete user Ajax      
         Route::delete('/{id}/delete_ajax', [BarangController::class, 'delete_ajax']);                                   // Untuk hapus data user Ajax   
         Route::delete('/{id}', [BarangController::class, 'destroy']);                                                   // menghapus data barang
+        Route::get('/import', [BarangController::class, 'import']);                                                     // Ajax form upload excel
+        Route::post('/import_ajax', [BarangController::class, 'import_ajax']);                                          // Ajax import excel
     });
 
     Route::middleware(['authorize:ADM,STF'])->prefix('stok')->group(function () {                    //Artinya semua route didalam group ini harus punya role STF (staff)
