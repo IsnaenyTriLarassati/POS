@@ -43,6 +43,7 @@ Route::middleware(['auth'])->group(function () { // artinya semua route di dalam
         Route::get('/import', [UserController::class, 'import']); 
         Route::post('/import_ajax', [UserController::class, 'import_ajax']); 
         Route::get('/export_excel', [UserController::class, 'export_excel']); 
+        Route::get('/export_pdf', [UserController::class, 'export_pdf']); 
     });
 
     Route::middleware(['authorize:ADM,MNG'])->prefix('level')->group(function () {               //Artinya semua route didalam group ini harus punya role ADM (Administrator) dan MNG (Manager)
@@ -62,7 +63,8 @@ Route::middleware(['auth'])->group(function () { // artinya semua route di dalam
         Route::delete('/{id}', [LevelController::class, 'destroy']);
         Route::get('/import', [LevelController::class, 'import']); 
         Route::post('/import_ajax', [LevelController::class, 'import_ajax']); 
-        Route::get('/export_excel', [LevelController::class, 'export_excel']);                                                   
+        Route::get('/export_excel', [LevelController::class, 'export_excel']);
+        Route::get('/export_pdf', [LevelController::class, 'export_pdf']);                                                    
     });
 
     Route::middleware(['authorize:ADM,STF,CUS'])->prefix('kategori')->group(function () {            //Artinya semua route didalam group ini harus punya role ADM (Administrator) dan STF (Staff)
@@ -83,6 +85,7 @@ Route::middleware(['auth'])->group(function () { // artinya semua route di dalam
         Route::get('/import', [KategoriController::class, 'import']); 
         Route::post('/import_ajax', [KategoriController::class, 'import_ajax']);
         Route::get('/export_excel', [KategoriController::class, 'export_excel']);
+        Route::get('/export_pdf', [KategoriController::class, 'export_pdf']); 
     });
 
     Route::middleware(['authorize:ADM,STF'])->prefix('barang')->group(function () {                  //Artinya semua route didalam group ini harus punya role STF (staff)
@@ -118,5 +121,6 @@ Route::middleware(['auth'])->group(function () { // artinya semua route di dalam
         Route::get('/import', [StokController::class, 'import']); 
         Route::post('/import_ajax', [StokController::class, 'import_ajax']);
         Route::get('/export_excel', [StokController::class, 'export_excel']);
+        Route::get('/export_pdf', [StokController::class, 'export_pdf']); 
     });
 });
