@@ -1,21 +1,40 @@
 @extends('layouts.template')
 
 @section('content')
-<div class="card card-outline card-primary">
+<div class="card">
     <div class="card-header">
-        <h3 class="card-title">{{ $page->title }}</h3>
+        <h3 class="card-title">Daftar Kategori</h3>
         <div class="card-tools">
-            <a class="btn btn-sm btn-primary mt-1" href="{{ url('kategori/create') }}">Tambah</a>
-            <button onclick="modalAction('{{ url('/kategori/create_ajax/') }}')" class="btn btn-sm btn-success mt-1">Tambah Ajax</button>
+            <button onclick="modalAction('{{ url('/kategori/import') }}')" class="btn btn-info">Import Kategori</button>
+            <button onclick="modalAction('{{ url('/kategori/create_ajax') }}')" class="btn btn-success">Tambah Data (Ajax)</button>
         </div>
     </div>
     <div class="card-body">
+
+        {{-- Alert Success/Error --}}
         @if (session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
+            <div class="alert alert-success">{{ session('success') }}</div>
         @endif
         @if (session('error'))
-        <div class="alert alert-danger">{{ session('error') }}</div>
+            <div class="alert alert-danger">{{ session('error') }}</div>
         @endif
+
+        {{-- Filter --}}
+        <div id="filter" class="form-horizontal filter-date p-2 border-bottom mb-2">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group form-group-sm row text-sm mb-0">
+                        <label for="filter_nama" class="col-md-1 col-form-label">Filter</label>
+                        <div class="col-md-3">
+                            <input type="text" id="filter_nama" class="form-control form-control-sm" placeholder="Nama Kategori">
+                            <small class="form-text text-muted">Cari berdasarkan Nama</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- Tabel --}}
         <table class="table table-bordered table-striped table-hover table-sm" id="table_kategori">
             <thead>
                 <tr>
@@ -25,59 +44,75 @@
                     <th>Aksi</th>
                 </tr>
             </thead>
+            <tbody></tbody>
         </table>
     </div>
 </div>
-<div id="myModal" class="modal fade animate shake" tabindex="-1" role="dialog" data- backdrop="static" data-keyboard="false" data-width="75%" aria-hidden="true"></div> 
+
+<div id="myModal" class="modal fade animate shake" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" data-width="75%" aria-hidden="true"></div>
 @endsection
-@push('css')
-@endpush
+
 @push('js')
 <script>
-    function modalAction(url = ''){
-            $('#myModal').load(url,function(){
-                $('#myModal').modal('show');
-            });
-        }
-        
-    $(document).ready(function() {
-        var dataKategori = $('#table_kategori').DataTable({
+    function modalAction(url = '') {
+        $('#myModal').load(url, function () {
+            $('#myModal').modal('show');
+        });
+    }
+
+    var tableKategori;
+    $(document).ready(function () {
+        tableKategori = $('#table_kategori').DataTable({
+            processing: true,
             serverSide: true,
             ajax: {
-                "url": "{{ url('kategori/list') }}",
-                "dataType": "json",
-                "type": "POST",
-                "data": function (d) {
-                    d.kategori_id = $('#kategori_id').val();
+                url: "{{ url('kategori/list') }}",
+                type: "POST",
+                dataType: "json",
+                data: function (d) {
+                    d.filter_nama = $('#filter_nama').val();
                 }
             },
-            columns: [{
-                // nomor urut dari laravel datatable addIndexColumn() 
-                data: "DT_RowIndex",
-                className: "text-center",
-                orderable: false,
-                searchable: false
-            }, {
-                data: "kategori_kode",
-                className: "",
-                orderable: true, // jika ingin kolom ini bisa diurutkan orderable: true,
-                searchable: true // searchable: true, jika ingin kolom ini bisa dicari
-            }, {
-                data: "kategori_nama",
-                className: "",
-                orderable: true,
-                searchable: true
-            }, {
-                data: "aksi",
-                className: "",
-                orderable: false,
-                searchable: false
-            }]
+            columns: [
+                {
+                    data: "DT_RowIndex",
+                    className: "text-center",
+                    width: "5%",
+                    orderable: false,
+                    searchable: false
+                },
+                {
+                    data: "kategori_kode",
+                    className: "",
+                    orderable: true,
+                    searchable: true
+                },
+                {
+                    data: "kategori_nama",
+                    className: "",
+                    orderable: true,
+                    searchable: true
+                },
+                {
+                    data: "aksi",
+                    className: "text-center",
+                    orderable: false,
+                    searchable: false
+                }
+            ]
         });
 
-        $('#kategori_id').on('change', function() {
-           dataUser.ajax.reload(); 
-        })
+        // Custom search dengan enter key
+        $('#table_kategori_filter input').unbind().bind().on('keyup', function (e) {
+            if (e.keyCode === 13) {
+                tableKategori.search(this.value).draw();
+            }
+        });
+
+        // Filter nama kategori otomatis
+        $('#filter_nama').on('keyup', function () {
+            tableKategori.draw();
+        });
     });
-</script> 
+</script>
 @endpush

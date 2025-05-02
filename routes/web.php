@@ -40,6 +40,8 @@ Route::middleware(['auth'])->group(function () { // artinya semua route di dalam
         Route::get('/{id}/delete_ajax', [UserController::class, 'confirm_ajax']);                                       // untuk tampilkan form confirm delete user Ajax
         Route::delete('/{id}/delete_ajax', [UserController::class, 'delete_ajax']);                                     // untuk hapus data user Ajax
         Route::delete('/{id}', [UserController::class, 'destroy']);                                                     // menghapus data user
+        Route::get('/import', [UserController::class, 'import']); 
+        Route::post('/import_ajax', [UserController::class, 'import_ajax']);  
     });
 
     Route::middleware(['authorize:ADM,MNG'])->prefix('level')->group(function () {               //Artinya semua route didalam group ini harus punya role ADM (Administrator) dan MNG (Manager)
@@ -56,7 +58,9 @@ Route::middleware(['auth'])->group(function () { // artinya semua route di dalam
         Route::put('/{id}/update_ajax', [LevelController::class, 'update_ajax']);                                       // Menyimpan perubahan data user Ajax      
         Route::get('/{id}/delete_ajax', [LevelController::class, 'confirm_ajax']);                                      // Untuk tampilkan form confirm delete user Ajax   
         Route::delete('/{id}/delete_ajax', [LevelController::class, 'delete_ajax']);                                    // Untuk hapus data user Ajax
-        Route::delete('/{id}', [LevelController::class, 'destroy']);                                                    // menghapus level user
+        Route::delete('/{id}', [LevelController::class, 'destroy']);
+        Route::get('/import', [LevelController::class, 'import']); 
+        Route::post('/import_ajax', [LevelController::class, 'import_ajax']);                                                    
     });
 
     Route::middleware(['authorize:ADM,STF,CUS'])->prefix('kategori')->group(function () {            //Artinya semua route didalam group ini harus punya role ADM (Administrator) dan STF (Staff)
@@ -74,6 +78,8 @@ Route::middleware(['auth'])->group(function () { // artinya semua route di dalam
         Route::get('/{id}/delete_ajax', [KategoriController::class, 'confirm_ajax']);                                   // Untuk tampilkan form confirm delete user Ajax      
         Route::delete('/{id}/delete_ajax', [KategoriController::class, 'delete_ajax']);                                 // Untuk hapus data user Ajax        
         Route::delete('/{id}', [KategoriController::class, 'destroy']);                                                 // menghapus kategori
+        Route::get('/import', [KategoriController::class, 'import']); 
+        Route::post('/import_ajax', [KategoriController::class, 'import_ajax']);
     });
 
     Route::middleware(['authorize:ADM,STF'])->prefix('barang')->group(function () {                  //Artinya semua route didalam group ini harus punya role STF (staff)
@@ -106,5 +112,7 @@ Route::middleware(['auth'])->group(function () { // artinya semua route di dalam
         Route::get('/{id}/delete_ajax', [StokController::class, 'confirm_ajax']);                                       // Untuk tampilkan form confirm delete user Ajax  
         Route::delete('/{id}/delete_ajax', [StokController::class, 'delete_ajax']);                                     // Untuk hapus data user Ajax   
         Route::delete('/{id}', [StokController::class, 'destroy']);                                                     // menghapus data stok
+        Route::get('/import', [StokController::class, 'import']); 
+        Route::post('/import_ajax', [StokController::class, 'import_ajax']);
     });
 });

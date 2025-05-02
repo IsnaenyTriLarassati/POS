@@ -3,13 +3,27 @@
 @section('content')
 <div class="card card-outline card-primary">
     <div class="card-header">
-        <h3 class="card-title">{{ $page->title }}</h3>
+        <h3 class="card-title">Daftar Pengguna</h3>
         <div class="card-tools">
-            <a class="btn btn-sm btn-primary mt-1" href="{{ url('level/create') }}">Tambah</a>
-            <button onclick="modalAction('{{ url('/level/create_ajax/') }}')" class="btn btn-sm btn-success mt-1">Tambah Ajax</button>
+            <button onclick="modalAction('{{ url('/level/import') }}')" class="btn btn-info">Import Level</button>
+            <button onclick="modalAction('{{ url('/level/create_ajax') }}')" class="btn btn-success">Tambah Data (Ajax)</button>
         </div>
     </div>
     <div class="card-body">
+        {{-- Filter --}}
+        <div id="filter" class="form-horizontal filter-date p-2 border-bottom mb-2">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group form-group-sm row text-sm mb-0">
+                        <label for="filter_nama" class="col-md-1 col-form-label">Filter</label>
+                        <div class="col-md-3">
+                            <input type="text" id="filter_nama" class="form-control form-control-sm" placeholder="Nama Kategori">
+                            <small class="form-text text-muted">Cari berdasarkan Nama</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         @if (session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
         @endif
@@ -44,7 +58,7 @@
     }
 
     $(document).ready(function() {
-        var dataUser = $('#table_level').DataTable({
+        var tableLevel = $('#table_level').DataTable({
             serverSide: true,
             ajax: {
                 "url": "{{ url('level/list') }}",
@@ -78,7 +92,7 @@
             }]
         });
         $('#level_id').on('change', function() {
-            dataUser.ajax.reload();
+            dataLevel.ajax.reload();
         })
     });
 </script> 
