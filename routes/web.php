@@ -41,7 +41,8 @@ Route::middleware(['auth'])->group(function () { // artinya semua route di dalam
         Route::delete('/{id}/delete_ajax', [UserController::class, 'delete_ajax']);                                     // untuk hapus data user Ajax
         Route::delete('/{id}', [UserController::class, 'destroy']);                                                     // menghapus data user
         Route::get('/import', [UserController::class, 'import']); 
-        Route::post('/import_ajax', [UserController::class, 'import_ajax']);  
+        Route::post('/import_ajax', [UserController::class, 'import_ajax']); 
+        Route::get('/export_excel', [UserController::class, 'export_excel']); 
     });
 
     Route::middleware(['authorize:ADM,MNG'])->prefix('level')->group(function () {               //Artinya semua route didalam group ini harus punya role ADM (Administrator) dan MNG (Manager)
@@ -60,7 +61,8 @@ Route::middleware(['auth'])->group(function () { // artinya semua route di dalam
         Route::delete('/{id}/delete_ajax', [LevelController::class, 'delete_ajax']);                                    // Untuk hapus data user Ajax
         Route::delete('/{id}', [LevelController::class, 'destroy']);
         Route::get('/import', [LevelController::class, 'import']); 
-        Route::post('/import_ajax', [LevelController::class, 'import_ajax']);                                                    
+        Route::post('/import_ajax', [LevelController::class, 'import_ajax']); 
+        Route::get('/export_excel', [LevelController::class, 'export_excel']);                                                   
     });
 
     Route::middleware(['authorize:ADM,STF,CUS'])->prefix('kategori')->group(function () {            //Artinya semua route didalam group ini harus punya role ADM (Administrator) dan STF (Staff)
@@ -80,6 +82,7 @@ Route::middleware(['auth'])->group(function () { // artinya semua route di dalam
         Route::delete('/{id}', [KategoriController::class, 'destroy']);                                                 // menghapus kategori
         Route::get('/import', [KategoriController::class, 'import']); 
         Route::post('/import_ajax', [KategoriController::class, 'import_ajax']);
+        Route::get('/export_excel', [KategoriController::class, 'export_excel']);
     });
 
     Route::middleware(['authorize:ADM,STF'])->prefix('barang')->group(function () {                  //Artinya semua route didalam group ini harus punya role STF (staff)
@@ -114,5 +117,6 @@ Route::middleware(['auth'])->group(function () { // artinya semua route di dalam
         Route::delete('/{id}', [StokController::class, 'destroy']);                                                     // menghapus data stok
         Route::get('/import', [StokController::class, 'import']); 
         Route::post('/import_ajax', [StokController::class, 'import_ajax']);
+        Route::get('/export_excel', [StokController::class, 'export_excel']);
     });
 });

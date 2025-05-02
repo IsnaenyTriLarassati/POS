@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
 
 class LevelController extends Controller
@@ -262,81 +263,131 @@ class LevelController extends Controller
 
      // Menghapus data level user
      public function destroy(string $id)
-     {
-         $level = LevelModel::find($id);
-         if (!$level) { // untuk mengecek apakah data level user dengan id yang dimaksud ada atau tidak
-             return redirect('/level')->with('error', 'Data level tidak ditemukan');
-         }
+    {
+        $level = LevelModel::find($id);
+        if (!$level) { // untuk mengecek apakah data level user dengan id yang dimaksud ada atau tidak
+            return redirect('/level')->with('error', 'Data level tidak ditemukan');
+        }
  
-         try {
-             LevelModel::destroy($id); // Hapus data level user
-             return redirect('/level')->with('success', 'Data user berhasil dihapus');
-         } catch (\Illuminate\Database\QueryException $e) {
+        try {
+            LevelModel::destroy($id); // Hapus data level user
+            return redirect('/level')->with('success', 'Data user berhasil dihapus');
+        } catch (\Illuminate\Database\QueryException $e) {
 
              // Jika terjadi error ketika menghapus data, redirect kembali ke halaman dengan membawa pesan error
-             return redirect('/level')->with('error', 'Data Level gagal dihapus karena masih terdapat tabel lain yang terkait dengan data ini');
-         }
-     }
+            return redirect('/level')->with('error', 'Data Level gagal dihapus karena masih terdapat tabel lain yang terkait dengan data ini');
+        }
+    }
     
-     public function import()
-     {
-         return view('level.import');
-     }
+    public function import()
+    {
+        return view('level.import');
+    }
  
-     public function import_ajax(Request $request)
-     {
-         if($request->ajax() || $request->wantsJson()){
-             $rules = [
+    public function import_ajax(Request $request)
+    {
+        if($request->ajax() || $request->wantsJson()){
+            $rules = [
                  // validasi file harus xls atau xlsx, max 1MB
-                 'file_level' => ['required', 'mimes:xlsx', 'max:1024']
-             ];
+                'file_level' => ['required', 'mimes:xlsx', 'max:1024']
+            ];
  
-             $validator = Validator::make($request->all(), $rules);
-             if($validator->fails()){
-                 return response()->json([
-                     'status' => false,
-                     'message' => 'Validasi Gagal',
-                     'msgField' => $validator->errors()
-                 ]);
-             }
+            $validator = Validator::make($request->all(), $rules);
+            if($validator->fails()){
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Validasi Gagal',
+                    'msgField' => $validator->errors()
+                ]);
+            }
  
-             $file = $request->file('file_level');  // ambil file dari request
+            $file = $request->file('file_level');  // ambil file dari request
  
-             $reader = IOFactory::createReader('Xlsx');  // load reader file excel
-             $reader->setReadDataOnly(true);             // hanya membaca data
-             $spreadsheet = $reader->load($file->getRealPath()); // load file excel
-             $sheet = $spreadsheet->getActiveSheet();    // ambil sheet yang aktif
+            $reader = IOFactory::createReader('Xlsx');  // load reader file excel
+            $reader->setReadDataOnly(true);             // hanya membaca data
+            $spreadsheet = $reader->load($file->getRealPath()); // load file excel
+            $sheet = $spreadsheet->getActiveSheet();    // ambil sheet yang aktif
  
-             $data = $sheet->toArray(null, false, true, true);   // ambil data excel
+            $data = $sheet->toArray(null, false, true, true);   // ambil data excel
  
-             $insert = [];
-             if(count($data) > 1){ // jika data lebih dari 1 baris
-                 foreach ($data as $baris => $value) {
-                     if($baris > 1){ // baris ke 1 adalah header, maka lewati
-                         $insert[] = [
-                             'level_kode' => $value['A'],
-                             'level_nama' => $value['B'],
-                             'created_at' => now(),
-                         ];
-                     }
-                 }
+            $insert = [];
+            if(count($data) > 1){ // jika data lebih dari 1 baris
+                foreach ($data as $baris => $value) {
+                    if($baris > 1){ // baris ke 1 adalah header, maka lewati
+                        $insert[] = [
+                            'level_kode' => $value['A'],
+                            'level_nama' => $value['B'],
+                            'created_at' => now(),
+                        ];
+                    }
+                }
  
-                 if(count($insert) > 0){
+                if(count($insert) > 0){
                      // insert data ke database, jika data sudah ada, maka diabaikan
-                     LevelModel::insertOrIgnore($insert);   
-                 }
+                    LevelModel::insertOrIgnore($insert);   
+                }
  
-                 return response()->json([
-                     'status' => true,
-                     'message' => 'Data berhasil diimport'
-                 ]);
-             }else{
-                 return response()->json([
-                     'status' => false,
-                     'message' => 'Tidak ada data yang diimport'
-                 ]);
-             }
-         }
-         return redirect('/');
-     }
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Data berhasil diimport'
+                ]);
+            }else{
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Tidak ada data yang diimport'
+                ]);
+            }
+        }
+        return redirect('/');
+    }
+    
+    public function export_excel()
+    {
+        // Ambil data level
+        $levels = LevelModel::select('level_kode', 'level_nama')
+                ->orderBy('level_kode')
+                ->get();
+
+        // Buat Spreadsheet
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        // Header kolom
+        $sheet->setCellValue('A1', 'No');
+        $sheet->setCellValue('B1', 'Kode Level');
+        $sheet->setCellValue('C1', 'Nama Level');
+        $sheet->getStyle('A1:C1')->getFont()->setBold(true);
+
+        // Isi data level
+        $no = 1;
+        $baris = 2;
+        foreach ($levels as $level) {
+                $sheet->setCellValue('A' . $baris, $no);
+                $sheet->setCellValue('B' . $baris, $level->level_kode);
+                $sheet->setCellValue('C' . $baris, $level->level_nama);
+                $baris++;
+                $no++;
+        }
+
+        // Auto size kolom
+        foreach (range('A', 'C') as $columnID) {
+                $sheet->getColumnDimension($columnID)->setAutoSize(true);
+        }
+
+        $sheet->setTitle('Data Level');
+
+        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+        $filename = 'Data Level ' . date('Y-m-d H:i:s') . '.xlsx';
+
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="' . $filename . '"');
+        header('Cache-Control: max-age=0');
+        header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
+        header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
+        header('Cache-Control: cache, must-revalidate');
+        header('Pragma: public');
+
+        $writer->save('php://output');
+        exit;
+    }
 }
