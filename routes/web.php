@@ -7,6 +7,7 @@ use App\Http\Controllers\LevelController;
 use App\Http\Controllers\StokController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WelcomeController;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -22,6 +23,11 @@ Route::get('logout', [AuthController::class, 'logout']);
 
 Route::middleware(['auth'])->group(function () { // artinya semua route di dalam group ini harus login dulu
         Route::get('/', [WelcomeController::class, 'index']);
+                //route profile
+        Route::group(['prefix' => 'profile'], function () {
+            Route::get('/', [ProfileController::class, 'index']);
+            Route::post('/update_photo', [ProfileController::class, 'update_photo']);
+        });
 
     // masukkan semua route yang perlu autentikasi di sini
 
